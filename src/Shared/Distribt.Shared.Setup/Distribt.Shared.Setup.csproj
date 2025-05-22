@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>Distribt.Shared.Setup</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Distribt.Shared.Api\Distribt.Shared.Api.csproj" />
+    <ProjectReference Include="..\Distribt.Shared.Serialization\Distribt.Shared.Serialization.csproj" />
+    <ProjectReference Include="..\Shared.Comunication\Distribt.Shared.Communication.RabbitMQ\Distribt.Shared.Communication.RabbitMQ.csproj" />
+  </ItemGroup>
+
+</Project>
