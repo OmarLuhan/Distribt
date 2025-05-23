@@ -5,21 +5,12 @@ using RabbitMQ.Client;
 
 namespace Distribt.Shared.Communication.RabbitMQ.Consumer;
 
-public class RabbitMqMessageReceiver : DefaultBasicConsumer
+public class RabbitMqMessageReceiver(IModel channel, ISerializer serializer, IHandleMessage handleMessage)
+    : DefaultBasicConsumer
 {
-    private readonly IModel _channel;
-    private readonly ISerializer _serializer;
     private byte[]? MessageBody { get; set; }
     private Type? MessageType { get; set; }
     private ulong DeliveryTag { get; set; }
-    private readonly IHandleMessage _handleMessage;
-
-    public RabbitMqMessageReceiver(IModel channel, ISerializer serializer, IHandleMessage handleMessage)
-    {
-        _channel = channel;
-        _serializer = serializer;
-        _handleMessage = handleMessage;
-    }
 
     public override void HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered, string exchange,
         string routingKey, IBasicProperties properties, ReadOnlyMemory<byte> body)
@@ -40,11 +31,11 @@ public class RabbitMqMessageReceiver : DefaultBasicConsumer
             throw new ArgumentException("Neither the body or the messageType has been populated");
         }
 
-        IMessage message = (_serializer.DeserializeObject(MessageBody, MessageType) as IMessage)
+        IMessage message = serializer.DeserializeObject(MessageBody, MessageType) as IMessage
                            ?? throw new ArgumentException("The message did not deserialized properly");
         
-        await _handleMessage.Handle(message, CancellationToken.None);
+        await handleMessage.Handle(message, CancellationToken.None);
      
-        _channel.BasicAck(DeliveryTag, false);
+        channel.BasicAck(DeliveryTag, false);
     }
 }

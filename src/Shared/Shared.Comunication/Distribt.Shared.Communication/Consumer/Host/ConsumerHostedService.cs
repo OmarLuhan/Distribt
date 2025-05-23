@@ -9,7 +9,7 @@ public class ConsumerHostedService<TMessage>(
     : IHostedService
 {
     private readonly CancellationTokenSource _stoppingCancellationTokenSource =
-        new CancellationTokenSource();
+        new();
     private Task? _executingTask;
 
     public Task StartAsync(CancellationToken cancellationToken)
